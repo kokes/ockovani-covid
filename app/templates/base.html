@@ -64,6 +64,9 @@
                 <a class="nav-link {{ 'active' if request.path == '/ockovani-covid/mista' else '' }}"
                    href="{{ url_for('view.info_mista') }}">Přehled očkovacích míst
                 </a>
+                <a class="nav-link {{ 'active' if request.path == '/ockovani-covid/info' else '' }}"
+                   href="{{ url_for('view.info_info') }}" style="display: none">Přehled očkovacích míst
+                </a>
             </li>
             <li class="nav-item col-lg-auto ml-auto">
                 <a class="nav-link {{ 'active' if request.path == '/ockovani-covid/mapa' else '' }}"
@@ -86,11 +89,11 @@
 {% endblock %}
 
 <div class="container mt-4">
-    <div class="alert alert-warning alert-dismissible fade show row" role="alert">
-        Poslední aktualizace:&nbsp;<strong>{{ last_update }}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    <div class="alert alert-danger row" role="alert">
+        <p class="mb-0">
+            Web byl přestěhován na: <a class="alert-link" href="https://ockovani.opendatalab.cz">https://ockovani.opendatalab.cz</a>.
+            Data na této stránce <strong>nejsou dále aktualizována!</strong>
+        </p>
     </div>
     {% block body %}{% endblock %}
 </div>

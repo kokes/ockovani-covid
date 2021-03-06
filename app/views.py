@@ -217,6 +217,26 @@ def _compute_vaccination_total(total):
     return total
 
 
+@bp.route("/info")
+def info_info():
+    ockovani_info = db.session.query(OckovaciMisto.id, OckovaciMisto.nazev,
+                                     Okres.nazev.label("okres"), Kraj.nazev.label("kraj"),
+                                     func.sum(OckovaniRezervace.volna_kapacita).label("pocet_mist")) \
+        .join(OckovaniRezervace, (OckovaniRezervace.ockovaci_misto_id == OckovaciMisto.id)) \
+        .outerjoin(Okres, (OckovaciMisto.okres_id == Okres.id)) \
+        .outerjoin(Kraj, (Okres.kraj_id == Kraj.id)) \
+        .filter(OckovaniRezervace.datum >= date.today(),
+                OckovaniRezervace.datum < date.today() + datetime.timedelta(DAYS)) \
+        .filter(or_(OckovaniRezervace.kalendar_ockovani == 'V1')) \
+        .filter(OckovaniRezervace.import_id == last_update_import_id()) \
+        .filter(OckovaciMisto.status == True) \
+        .group_by(OckovaciMisto.id, OckovaciMisto.nazev, Okres.id, Kraj.id) \
+        .order_by(Kraj.nazev, Okres.nazev, OckovaciMisto.nazev) \
+        .all()
+
+    return render_template('info.html', ockovaci_mista=ockovani_info, last_update=last_update(), days=DAYS)
+
+
 @bp.route("/mista")
 def info_mista():
     ockovani_info = db.session.query(OckovaciMisto.id, OckovaciMisto.nazev,
